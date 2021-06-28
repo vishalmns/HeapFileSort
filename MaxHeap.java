@@ -25,19 +25,21 @@ public class MaxHeap {
         int l = 2 * i + 1; // left = 2*i + 1
         int r = 2 * i + 2; // right = 2*i + 2
 
-        Record hlarge = rc.getHeapRecord(i);
+        Record hlarge = rc.getHeapRecord(largest);
         Record hl = rc.getHeapRecord(l);
         Record hr = rc.getHeapRecord(r);
 
 
         // If left child is larger than root
-        if (l < n && hl.getKey() > hlarge.getKey())
+        if (l < n && hl.getKey() > hlarge.getKey()) {
             largest = l;
-
+            hlarge = rc.getHeapRecord(largest);
+        }
         // If right child is larger than largest so far
-        if (r < n && hr.getKey() > hlarge.getKey())
+        if (r < n && hr.getKey() > hlarge.getKey()) {
             largest = r;
-
+            hlarge = rc.getHeapRecord(largest);
+        }
         // If largest is not root
         if (largest != i) {
 //            int swap = arr[i];
