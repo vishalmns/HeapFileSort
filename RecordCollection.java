@@ -38,26 +38,13 @@ public class RecordCollection {
 
 
     private byte[] buildBytes(Record record) {
-        ByteBuffer byteBufferKey = ByteBuffer.allocate(2);
-        byteBufferKey.putShort(record.getKey());
-        byte[] keyByteArray = byteBufferKey.array();
 
-        ByteBuffer byteBufferValue = ByteBuffer.allocate(2);
-        byteBufferValue.putShort(record.getValue());
-        byte[] valueByteArray = byteBufferValue.array();
+        short[] shorts = new short[] { record.getKey(), record.getValue() };
 
-        byte[] resultByteArray =
-            new byte[keyByteArray.length + valueByteArray.length];
+        byte[] resultBytes = new byte[shorts.length * 2];
+        ByteBuffer.wrap(resultBytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().put(shorts);
 
-        int index = 0;
-        for (int i = 0; i < keyByteArray.length; i++) {
-            resultByteArray[index++] = keyByteArray[i];
-        }
-        for (int i = 0; i < valueByteArray.length; i++) {
-            resultByteArray[index++] = valueByteArray[i];
-        }
-
-        return resultByteArray;
+        return resultBytes;
 
     }
 
@@ -74,19 +61,17 @@ public class RecordCollection {
     }
 
     private Record buildRecord(byte[] recordBytes) {
-        ByteBuffer byteBufferKey = ByteBuffer.allocate(2);
-        byteBufferKey.order(ByteOrder.LITTLE_ENDIAN);
-        byteBufferKey.put(recordBytes[0]);
-        byteBufferKey.put(recordBytes[1]);
-        short key = byteBufferKey.getShort(0);
+        short[] shorts = new short[recordBytes.length / 2];
 
-        ByteBuffer byteBufferValue = ByteBuffer.allocate(2);
-        byteBufferValue.order(ByteOrder.LITTLE_ENDIAN);
-        byteBufferValue.put(recordBytes[2]);
-        byteBufferValue.put(recordBytes[3]);
-        short value = byteBufferValue.getShort(0);
+        ByteBuffer.wrap(recordBytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer()
+            .get(shorts);
 
-        return new Record(key,value);
+        if (shorts.length != 2) {
+            System.out.println("bad length");
+        }
+
+        return new Record(shorts[0], shorts[1]);
+
     }
 
 }

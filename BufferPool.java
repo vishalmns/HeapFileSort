@@ -25,38 +25,6 @@ public class BufferPool {
         this.maxBuffer = maxBuffer;
     }
 
-
-    public short getKey(int i) {
-
-        int bufferBlock = i / 1024;
-        int bufferIndex = bufferBlock % 1024;
-
-        Optional<Buffer> theBuffer = getTheBuffer(i / 1024);
-
-        short value = 0;
-
-        if (theBuffer.isEmpty()) {
-            // read the buffer block from file
-            // use LRU to replace
-            // it is list so take advantage
-
-        }
-        else {
-            value = theBuffer.get().getValue(bufferIndex);
-        }
-
-        return value;
-    }
-
-
-    private Optional<Buffer> getTheBuffer(int bufferIndex) {
-
-        return pool.stream().parallel()
-            .filter(bf -> bf.getBlockNumber() == bufferIndex).findFirst();
-
-    }
-
-
     public byte[] getRecordBytes(int startIndex, int recordSize) {
 
         byte[] recordBytes = new byte[recordSize];
