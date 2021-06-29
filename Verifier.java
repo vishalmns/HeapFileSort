@@ -4,7 +4,7 @@ public class Verifier {
 
         CheckFile checkFile = new CheckFile();
         try {
-            boolean b = checkFile.checkFile("input.txt");
+            boolean b = checkFile.checkFile("p3_input_sample.txt");
             System.out.println(b);
         }
         catch (Exception e) {

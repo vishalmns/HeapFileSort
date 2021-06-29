@@ -7,11 +7,16 @@ public class Generator {
 
     public static void main(String[] args) throws IOException {
 
+        ByteFileGenerator generator = new ByteFileGenerator();
         int numberOfRecords = 1024 * 2;
+        generator.generate(numberOfRecords);
+
         generate(numberOfRecords);
 
-        File fp = new File("input.txt");
+        File fp = new File("p3_input_sample.txt");
         System.out.println(fp.length());
+
+
     }
     public static void generate(int numRecords) throws IOException {
 

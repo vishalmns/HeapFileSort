@@ -15,7 +15,6 @@ public class ByteFileGenerator {
     public ByteFileGenerator() {
     }
 
-
     /**
      * Generates the byte file
      * 
