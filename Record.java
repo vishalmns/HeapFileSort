@@ -7,12 +7,6 @@ public class Record {
         this.value = value;
     }
 
-
-    public Record(byte[] recordBytes) {
-
-    }
-
-
     public short getKey() {
         return key;
     }

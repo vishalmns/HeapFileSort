@@ -18,25 +18,13 @@ public class Buffer {
         return bytes;
     }
 
-
     public int getBlockNumber() {
         return blockNumber;
     }
 
-
     public boolean isDirty() {
         return isDirty;
     }
-
-
-    public short getValue(int bufferIndex) {
-        ByteBuffer bb = ByteBuffer.allocate(2);
-        bb.order(ByteOrder.LITTLE_ENDIAN);
-        bb.put(bytes[bufferIndex]);
-        bb.put(bytes[bufferIndex + 1]);
-        return bb.getShort(0);
-    }
-
 
     public void setBytes(byte[] recordBytes, int bufferStart) {
 

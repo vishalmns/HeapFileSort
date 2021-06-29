@@ -31,8 +31,10 @@ public class CheckFile {
      */
     public boolean checkFile(String filename) throws Exception {
         boolean isError = false;
-        DataInputStream in = new DataInputStream(new BufferedInputStream(
-            new FileInputStream(filename)));
+        FileInputStream fileInputStream = new FileInputStream(filename);
+        DataInputStream in = new DataInputStream(new BufferedInputStream(fileInputStream));
+
+        System.out.println(fileInputStream.getChannel().size());
         // Prime with the first record
         short key2 = in.readShort();
         in.readShort();

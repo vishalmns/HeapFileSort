@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.Optional;
 
@@ -15,15 +12,17 @@ public class BufferPool {
     private int cacheHitCount = 0;
     private int diskWriteCount = 0;
     private int cacheMissCount = 0;
+    private int diskReadCount = 0;
 
     private RandomAccessFile file;
 
 
     public BufferPool(File file, int maxBuffer) throws FileNotFoundException {
         pool = new LinkedList<>();
-        this.file = new RandomAccessFile(file, "rw");;
+        this.file = new RandomAccessFile(file, "rw");
         this.maxBuffer = maxBuffer;
     }
+
 
     public byte[] getRecordBytes(int startIndex, int recordSize) {
 
@@ -60,7 +59,6 @@ public class BufferPool {
         }
         else {
             // not in the pool
-
             try {
                 Buffer buffer = addBuffer(blockNumber);
                 return buffer;
@@ -106,7 +104,7 @@ public class BufferPool {
         int startIndexOfFile = blockNumber * blockSize;
         file.seek(startIndexOfFile);
         file.read(readBytes, 0, blockSize);
-
+        diskReadCount++;
         return readBytes;
     }
 
@@ -139,9 +137,10 @@ public class BufferPool {
 
     }
 
+
     public void writeAll() {
         pool.stream().forEach(buffer -> {
-            if(buffer.isDirty()) {
+            if (buffer.isDirty()) {
                 try {
                     writeBufToFile(buffer);
                 }
@@ -150,5 +149,23 @@ public class BufferPool {
                 }
             }
         });
+    }
+
+
+    public void writeStats(String statFileName) {
+        try {
+            FileWriter fw = new FileWriter(statFileName, true);
+            fw.write("------  STATS ------" + "\n");
+            fw.write("File name: "+ statFileName + "\n");
+            fw.write("Cache Hits: "+ cacheHitCount + "\n");
+            fw.write("Cache Misses: "+ cacheMissCount + "\n");
+            fw.write("Disk Reads: "+ diskReadCount + "\n");
+            fw.write("Disk Writes: "+ diskWriteCount + "\n");
+            fw.close();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

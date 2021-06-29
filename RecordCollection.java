@@ -13,8 +13,6 @@ public class RecordCollection {
     return this.length;
     }
 
-
-
     public RecordCollection(BufferPool pool, long length) {
         this.pool = pool;
         this.length = (int)(length / recordSize);
@@ -42,7 +40,7 @@ public class RecordCollection {
         short[] shorts = new short[] { record.getKey(), record.getValue() };
 
         byte[] resultBytes = new byte[shorts.length * 2];
-        ByteBuffer.wrap(resultBytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().put(shorts);
+        ByteBuffer.wrap(resultBytes).order(ByteOrder.BIG_ENDIAN).asShortBuffer().put(shorts);
 
         return resultBytes;
 
@@ -63,7 +61,7 @@ public class RecordCollection {
     private Record buildRecord(byte[] recordBytes) {
         short[] shorts = new short[recordBytes.length / 2];
 
-        ByteBuffer.wrap(recordBytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer()
+        ByteBuffer.wrap(recordBytes).order(ByteOrder.BIG_ENDIAN).asShortBuffer()
             .get(shorts);
 
         if (shorts.length != 2) {
