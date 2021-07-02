@@ -1,11 +1,9 @@
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 public class Buffer {
 
     private byte[] bytes;
     private int blockNumber;
     private boolean isDirty;
+
 
     public Buffer(byte[] bytes, int blockNumber) {
         this.bytes = bytes;
@@ -18,13 +16,16 @@ public class Buffer {
         return bytes;
     }
 
+
     public int getBlockNumber() {
         return blockNumber;
     }
 
+
     public boolean isDirty() {
         return isDirty;
     }
+
 
     public void setBytes(byte[] recordBytes, int bufferStart) {
 

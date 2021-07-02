@@ -23,18 +23,16 @@ public class CheckFile {
     /**
      * This method checks a file to see if it is properly sorted.
      *
-     * @param filename
-     *            a string containing the name of the file to check
+     * @param filename a string containing the name of the file to check
      * @return true if the file is sorted, false otherwise
-     * @throws Exception
-     *             either and IOException or a FileNotFoundException
+     * @throws Exception either and IOException or a FileNotFoundException
      */
     public boolean checkFile(String filename) throws Exception {
         boolean isError = false;
         FileInputStream fileInputStream = new FileInputStream(filename);
-        DataInputStream in = new DataInputStream(new BufferedInputStream(fileInputStream));
+        DataInputStream in =
+            new DataInputStream(new BufferedInputStream(fileInputStream));
 
-        System.out.println(fileInputStream.getChannel().size());
         // Prime with the first record
         short key2 = in.readShort();
         in.readShort();
@@ -46,12 +44,14 @@ public class CheckFile {
                 key2 = in.readShort();
                 in.readShort();
                 if (key1 > key2) {
+                    System.out.println("key one is :" + key1);
+                    System.out.println("key two is :" + key2);
                     isError = true;
                 }
             }
         }
         catch (EOFException e) {
-            System.out.println(reccnt + " records processed");
+
         }
         in.close();
         return !isError;

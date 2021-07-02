@@ -3,20 +3,28 @@ import java.nio.ByteOrder;
 
 public class RecordCollection {
 
-    private BufferPool pool;
+    private final long fileLength;
+    private final int numberOfBlocks;
+    private BufferPoolLRU pool;
 
-    private int length;
+    private int blockSize = 4096;
+    private int numberOfRecords;
 
     private int recordSize = 4;
 
-    public int getLength() {
-    return this.length;
+
+    public RecordCollection(BufferPoolLRU pool, long length) {
+        this.pool = pool;
+        this.numberOfRecords = (int)(length / recordSize);
+        this.fileLength = length;
+        this.numberOfBlocks = (int)(length / blockSize);
     }
 
-    public RecordCollection(BufferPool pool, long length) {
-        this.pool = pool;
-        this.length = (int)(length / recordSize);
+
+    public int getNumberOfRecords() {
+        return this.numberOfRecords;
     }
+
 
     public void swap(int a, int b) {
         Record heapRecordA = this.getHeapRecord(a);
@@ -40,7 +48,8 @@ public class RecordCollection {
         short[] shorts = new short[] { record.getKey(), record.getValue() };
 
         byte[] resultBytes = new byte[shorts.length * 2];
-        ByteBuffer.wrap(resultBytes).order(ByteOrder.BIG_ENDIAN).asShortBuffer().put(shorts);
+        ByteBuffer.wrap(resultBytes).order(ByteOrder.BIG_ENDIAN).asShortBuffer()
+            .put(shorts);
 
         return resultBytes;
 
@@ -58,17 +67,34 @@ public class RecordCollection {
         return record;
     }
 
+
     private Record buildRecord(byte[] recordBytes) {
         short[] shorts = new short[recordBytes.length / 2];
 
         ByteBuffer.wrap(recordBytes).order(ByteOrder.BIG_ENDIAN).asShortBuffer()
             .get(shorts);
 
-        if (shorts.length != 2) {
-            System.out.println("bad length");
-        }
-
         return new Record(shorts[0], shorts[1]);
+
+    }
+
+
+    public void writeFirstRecord() {
+        int maxRecordsInALine = 8;
+        int numberOfRecordInABlock = blockSize / recordSize;
+
+        for (int blockNumber = 0; blockNumber < numberOfBlocks; blockNumber++) {
+
+            int recordNumber = blockNumber * numberOfRecordInABlock;
+            Record heapRecord = getHeapRecord(recordNumber);
+            System.out.print(heapRecord.getKey() + " " + heapRecord.getValue());
+            System.out.print("    ");
+            if (--maxRecordsInALine <= 0) {
+                System.out.println();
+                maxRecordsInALine = 8;
+            }
+
+        }
 
     }
 

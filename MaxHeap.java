@@ -6,11 +6,12 @@ public class MaxHeap {
 
     public MaxHeap(RecordCollection rc, int length) {
         this.rc = rc;
-        this.length = rc.getLength();
+        this.length = rc.getNumberOfRecords();
     }
 
 
     public void build() {
+//        System.out.println("lenght is " + length);
         int startIdx = (length / 2) - 1;
 
         for (int i = startIdx; i >= 0; i--) {
@@ -25,23 +26,28 @@ public class MaxHeap {
         int l = (2 * i) + 1; // left = 2*i + 1
         int r = (2 * i) + 2; // right = 2*i + 2
 
+        if (l > n && r > n) {
+            return;
+        }
+
         Record hlarge = rc.getHeapRecord(largest);
-        Record hl = rc.getHeapRecord(l);
-        Record hr = rc.getHeapRecord(r);
 
+        if (l < n) {
+            Record hl = rc.getHeapRecord(l);
+            if (hl.getKey() > hlarge.getKey()) {
+                hlarge = hl;
+                largest = l;
+            }
+        }
 
-        // If left child is larger than root
-        if (l < n && hl.getKey() > hlarge.getKey()) {
-            largest = l;
-//            hlarge = rc.getHeapRecord(largest);
-            hlarge = hl;
+        if (r < n) {
+            Record hr = rc.getHeapRecord(r);
+            if (hr.getKey() > hlarge.getKey()) {
+//                hlarge = hr;
+                largest = r;
+            }
         }
-        // If right child is larger than largest so far
-        if (r < n && hr.getKey() > hlarge.getKey()) {
-            largest = r;
-//            hlarge = rc.getHeapRecord(largest);
-            hlarge = hr;
-        }
+
         // If largest is not root
         if (largest != i) {
             rc.swap(i, largest);
@@ -53,9 +59,9 @@ public class MaxHeap {
 
     public void arrange() {
 
-        for (int i = length - 1; i >=0 ; i--) {
+        for (int i = length - 1; i >= 0; i--) {
             rc.swap(0, i);
-            heapifyRecord(rc,i,0);
+            heapifyRecord(rc, i, 0);
         }
     }
 

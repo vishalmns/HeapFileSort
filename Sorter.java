@@ -3,22 +3,25 @@ import java.io.IOException;
 
 public class Sorter {
 
-    private RecordCollection rc;
     long timeTaken;
+    private RecordCollection rc;
+
 
     public Sorter(RecordCollection rc) {
         this.rc = rc;
         this.timeTaken = 0L;
     }
 
+
     void sort() {
         long start = System.currentTimeMillis();
-        MaxHeap maxHeap = new MaxHeap(rc, rc.getLength());
+        MaxHeap maxHeap = new MaxHeap(rc, rc.getNumberOfRecords());
         maxHeap.build();
         maxHeap.arrange();
         long end = System.currentTimeMillis();
         timeTaken = end - start;
     }
+
 
     public void writeTimeTaken(String statFileName) {
         try {
