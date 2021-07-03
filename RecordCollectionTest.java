@@ -2,12 +2,24 @@ import student.TestCase;
 
 import java.io.*;
 
+/**
+ * Test the record collection class
+ * @author mark paes, vishalms
+ * @version 1.0
+ */
 public class RecordCollectionTest extends TestCase {
 
-    RecordCollection recordCollection;
+    /**
+     * record collection object
+     */
+    private RecordCollection recordCollection;
 
 
-    public void setUp() throws IOException {
+    /**
+     * Initalising the test files and objects.
+     * @throws IOException
+     */
+    public void setUp() throws Exception {
         File actualTestFile = new File("test_one_buf_one_rec.txt");
         File copyTestFile = new File("test.txt");
         copyFileUsingStream(actualTestFile, copyTestFile);
@@ -16,12 +28,18 @@ public class RecordCollectionTest extends TestCase {
     }
 
 
+    /**
+     * number of record in one block size file
+     */
     public void testNumberOfRecordInOneRecFile() {
         int numberOfRecords = recordCollection.getNumberOfRecords();
         assertEquals(1024, numberOfRecords);
     }
 
 
+    /**
+     * get particular record from the file
+     */
     public void testGetParticularHeapRecord() {
         Record heapRecord = recordCollection.getHeapRecord(10);
         assertEquals((short)8505, heapRecord.getKey());
@@ -29,6 +47,9 @@ public class RecordCollectionTest extends TestCase {
     }
 
 
+    /**
+     * test to fetch record that does not exist in the file
+     */
     public void testGetParticularHeapRecordNotInFile() {
         Record heapRecord = recordCollection.getHeapRecord(10000);
         assertEquals((short)0, heapRecord.getKey());
@@ -36,6 +57,9 @@ public class RecordCollectionTest extends TestCase {
     }
 
 
+    /**
+     * test to swap two records
+     */
     public void testSwapHeapRecord() {
         Record heapRecordZero = recordCollection.getHeapRecord(0);
         Record heapRecordOne = recordCollection.getHeapRecord(1);
@@ -51,6 +75,12 @@ public class RecordCollectionTest extends TestCase {
     }
 
 
+    /**
+     * helper function to create duplicate test file for consistance
+     * @param source actual test file
+     * @param dest copy of the test file
+     * @throws IOException throws when unable to access the files
+     */
     private void copyFileUsingStream(File source, File dest)
         throws IOException {
         InputStream is = null;
@@ -65,7 +95,9 @@ public class RecordCollectionTest extends TestCase {
             }
         }
         finally {
+            assert is != null;
             is.close();
+            assert os != null;
             os.close();
         }
     }

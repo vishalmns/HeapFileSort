@@ -2,24 +2,40 @@ import student.TestCase;
 
 import java.io.*;
 
+/**
+ * Test to heap sort of the file
+ * @author mark paes,vishalms
+ * @version 1.0
+ */
 public class HeapSortTest extends TestCase {
-
+    /**
+     * to fetch standard output data in test
+     */
     private final ByteArrayOutputStream outputStreamCaptor =
         new ByteArrayOutputStream();
-    public HeapSort heapSort;
-    public ByteFileGenerator generator;
-    public CheckFile checkFile;
+    /**
+     * Heap sort object
+     */
+    private HeapSort heapSort;
+    /**
+     * Ojject used to verify the file is sorted or not.
+     */
+    private CheckFile checkFile;
 
 
+    /**
+     * initalise the declared object.
+     */
     public void setUp() {
         System.setOut(new PrintStream(outputStreamCaptor));
         heapSort = new HeapSort();
-
-        generator = new ByteFileGenerator();
         checkFile = new CheckFile();
     }
 
 
+    /**
+     * test to throw expection when number of aruuments is not equal to three
+     */
     public void testToThrowIllegalArgumentExpectionWhenArgumentLessThanThree() {
         String[] strings = new String[] { "one" };
         HeapSort.main(strings);
@@ -28,6 +44,10 @@ public class HeapSortTest extends TestCase {
     }
 
 
+    /**
+     * Test to file is sorted of size 4096 bytes with help of one buffer
+     * @throws Exception when unable to do file operation
+     */
     public void testToSortAFile() throws Exception {
         File actualTestFile = new File("test_one_buf_one_rec.txt");
         File copyTestFile = new File("test.txt");
@@ -39,10 +59,15 @@ public class HeapSortTest extends TestCase {
         assertTrue(result);
         assertTrue(outputStreamCaptor.toString().contains("99 31801"));
 
-        copyTestFile.delete();
+        boolean delete = copyTestFile.delete();
+        assertTrue(delete);
     }
 
 
+    /**
+     * Test to file is sorted of size 4096 * 10 bytes with help of one buffer
+     * @throws Exception when unable to do file operation
+     */
     public void testToSortAFileWithOneBufferMoreRecord() throws Exception {
         File actualTestFile = new File("test_one_buf_ten_rec.txt");
         File copyTestFile = new File("test.txt");
@@ -54,14 +79,17 @@ public class HeapSortTest extends TestCase {
         assertTrue(result);
         assertEquals(oneBufTenRec(), outputStreamCaptor.toString().trim());
 
-        copyTestFile.delete();
+        boolean delete = copyTestFile.delete();
+        assertTrue(delete);
     }
 
-
+    /**
+     * Test to file is sorted of size 4096 * 100 bytes with help of max buffer
+     * @throws Exception when unable to do file operation
+     */
     public void testToSortAFileWith20BufferWithMaxRecord() throws Exception {
         File actualTestFile = new File("test_max_buffer.txt");
         File copyTestFile = new File("test.txt");
-        File stateFile = new File("stats.txt");
         copyFileUsingStream(actualTestFile, copyTestFile);
         String[] args = new String[] { "test.txt", "20", "stats.txt" };
         heapSort.main(args);
@@ -71,10 +99,18 @@ public class HeapSortTest extends TestCase {
         assertEquals(maxStringOutput().trim(),
             outputStreamCaptor.toString().trim());
 
-        copyTestFile.delete();
+        boolean delete = copyTestFile.delete();
+        assertTrue(delete);
     }
 
 
+    /**
+     * To make a copy of test file so that repeated running of test should not
+     * change the value
+     * @param source actual test generated file
+     * @param dest copy of the acutal file
+     * @throws IOException throws when unable to access the file
+     */
     private void copyFileUsingStream(File source, File dest)
         throws IOException {
         InputStream is = null;
@@ -89,12 +125,18 @@ public class HeapSortTest extends TestCase {
             }
         }
         finally {
+            assert is != null;
             is.close();
+            assert os != null;
             os.close();
         }
     }
 
 
+    /**
+     * Stream output when sorted with max buffer test
+     * @return starting key of each buffer
+     */
     private String maxStringOutput() {
         return "0 32273    331 29628    654 7456    992 7948    1318 22179   "
             + " 1650 21539    1960 16358    2283 13303    \n"
@@ -124,6 +166,10 @@ public class HeapSortTest extends TestCase {
     }
 
 
+    /**
+     * stream output when sorted with one buffer of size 4096*10 bytes file
+     * @return starting key of each buffer
+     */
     public String oneBufTenRec() {
         return
             "0 24749    3242 12340    6623 12552    9803 2677    13266 30182"
